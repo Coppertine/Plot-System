@@ -83,16 +83,20 @@ public class EventListener extends SpecialBlocks implements Listener {
                     event.getPlayer().getInventory().setItem(7, ReviewMenu.getMenuItem());
                 }
             }
+            
+            // Check if player even exists in database.
+            try {
+                if(!DatabaseConnection.createStatement("SELECT * FROM plotsystem_builders WHERE uuid = ?")
+                        .setValue(event.getPlayer().getUniqueId()).executeQuery().first()) {
 
-            if(!event.getPlayer().hasPlayedBefore()) {
-                try {
-                    DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
-                            .setValue(event.getPlayer().getUniqueId().toString())
-                            .setValue(event.getPlayer().getName())
-                            .executeUpdate();
-                } catch (SQLException ex) {
-                    Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
+                        DatabaseConnection.createStatement("INSERT INTO plotsystem_builders (uuid, name) VALUES (?, ?)")
+                                .setValue(event.getPlayer().getUniqueId().toString())
+                                .setValue(event.getPlayer().getName())
+                                .executeUpdate();
+
                 }
+            } catch (SQLException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
             }
 
             // Inform player about update
