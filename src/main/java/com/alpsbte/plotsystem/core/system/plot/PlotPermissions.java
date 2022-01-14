@@ -24,10 +24,11 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.alpsbte.plotsystem.PlotSystem;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
@@ -81,7 +82,7 @@ public class PlotPermissions {
     }
 
     public ProtectedRegion getPlotRegion() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 
         String worldName = "P-" + plotID;
         try {
@@ -90,7 +91,7 @@ public class PlotPermissions {
             Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);
         }
 
-        RegionManager regionManager = container.get(Bukkit.getWorld(worldName));
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(Bukkit.getWorld(worldName)));
         return regionManager.getRegion("p-" + plotID);
     }
 }

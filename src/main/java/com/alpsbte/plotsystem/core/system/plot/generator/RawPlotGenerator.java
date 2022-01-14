@@ -24,13 +24,14 @@
 
 package com.alpsbte.plotsystem.core.system.plot.generator;
 
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,8 +60,8 @@ public class RawPlotGenerator extends AbstractPlotGenerator {
 
     @Override
     protected void createProtection() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        RegionManager regionManager = container.get(getPlot().getPlotWorld());
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(getPlot().getPlotWorld()));
 
         if (regionManager != null) {
             for (String regionID : regionManager.getRegions().keySet()) {

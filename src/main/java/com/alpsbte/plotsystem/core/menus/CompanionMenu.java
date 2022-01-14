@@ -71,7 +71,7 @@ public class CompanionMenu extends AbstractMenu {
                         .build());
 
         // Set loading item for plots difficulty item
-        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+        getMenu().getSlot(7).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD));
 
         // Set builder utilities menu item
         getMenu().getSlot(50).setItem(BuilderUtilitiesMenu.getMenuItem());
@@ -81,7 +81,7 @@ public class CompanionMenu extends AbstractMenu {
 
         // Set player settings menu item
         getMenu().getSlot(52)
-                .setItem(new ItemBuilder(Material.REDSTONE_COMPARATOR)
+                .setItem(new ItemBuilder(Material.COMPARATOR)
                         .setName("§b§lSettings")
                         .setLore(new LoreBuilder()
                                 .addLine("Modify your user settings.").build())
@@ -106,7 +106,7 @@ public class CompanionMenu extends AbstractMenu {
                                     ).build())
                             .build());
                 } else {
-                    getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.EMPTY_MAP, 1 + i)
+                    getMenu().getSlot(46 + i).setItem(new ItemBuilder(Material.MAP, 1 + i)
                             .setName("§b§lSLOT " + (i + 1))
                             .setLore(new LoreBuilder()
                                     .addLines("§7Click on a city project to create a new plot.",
@@ -234,7 +234,7 @@ public class CompanionMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111101111")
                 .pattern("000000000")
                 .pattern("000000000")

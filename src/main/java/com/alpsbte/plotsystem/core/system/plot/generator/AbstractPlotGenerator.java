@@ -35,19 +35,19 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
-import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -55,6 +55,7 @@ import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -150,21 +151,21 @@ public abstract class AbstractPlotGenerator {
     protected void generateOutlines(File plotSchematic) {
         try {
             if (plotSchematic != null) {
-                Vector buildingOutlinesCoordinates = PlotManager.getPlotCenter();
+                BlockVector3 buildingOutlinesCoordinates = PlotManager.getPlotCenter();
 
                 com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getPlotWorld());
-                Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read(weWorld.getWorldData());
+                Clipboard clipboard = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read();
 
                 // Place the bottom part of the schematic 5 blocks above 0
-                double heightDif = clipboard.getOrigin().getY() - clipboard.getMinimumPoint().getY();
+                int heightDif = clipboard.getOrigin().getY() - clipboard.getMinimumPoint().getY();
                 buildingOutlinesCoordinates = buildingOutlinesCoordinates.add(0, heightDif, 0);
 
-                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, weWorld.getWorldData());
-                EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().getEditSessionFactory().getEditSession(weWorld, -1);
+                ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
+                EditSession editSession = PlotSystem.DependencyManager.getWorldEdit().newEditSession(weWorld);
 
-                Operation operation = clipboardHolder.createPaste(editSession, weWorld.getWorldData()).to(buildingOutlinesCoordinates).ignoreAirBlocks(false).build();
+                Operation operation = clipboardHolder.createPaste(editSession).to(buildingOutlinesCoordinates).ignoreAirBlocks(false).build();
                 Operations.complete(operation);
-                editSession.flushQueue();
+                editSession.close();
 
                 plot.getPlotWorld().setSpawnLocation(PlotHandler.getPlotSpawnPoint(plot));
             }
@@ -180,12 +181,13 @@ public abstract class AbstractPlotGenerator {
      */
     protected void configureWorld(@NotNull MultiverseWorld mvWorld) {
         // Set Bukkit world game rules
-        plot.getPlotWorld().setGameRuleValue("randomTickSpeed", "0");
-        plot.getPlotWorld().setGameRuleValue("doDaylightCycle", "false");
-        plot.getPlotWorld().setGameRuleValue("doFireTick", "false");
-        plot.getPlotWorld().setGameRuleValue("doWeatherCycle", "false");
-        plot.getPlotWorld().setGameRuleValue("keepInventory", "true");
-        plot.getPlotWorld().setGameRuleValue("announceAdvancements", "false");
+        plot.getPlotWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        plot.getPlotWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        plot.getPlotWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
+        plot.getPlotWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        plot.getPlotWorld().setGameRule(GameRule.KEEP_INVENTORY, true);
+        plot.getPlotWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        plot.getPlotWorld().setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
 
         // Set world time to midday
         plot.getPlotWorld().setTime(6000);
@@ -206,16 +208,16 @@ public abstract class AbstractPlotGenerator {
      * Creates plot protection
      */
     protected void createProtection() {
-        BlockVector min = BlockVector.toBlockPoint(0, 1, 0);
-        BlockVector max = BlockVector.toBlockPoint(PlotManager.PLOT_SIZE, 256, PlotManager.PLOT_SIZE);
+        BlockVector3 min = BlockVector3.at(0, 1, 0);
+        BlockVector3 max = BlockVector3.at(PlotManager.PLOT_SIZE, 256, PlotManager.PLOT_SIZE);
 
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
-        RegionManager regionManager = container.get(plot.getPlotWorld());
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(plot.getPlotWorld()));
 
         // Create protected region for world
         GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");
-        globalRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
-        globalRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+        globalRegion.setFlag(Flags.ENTRY, StateFlag.State.DENY);
+        globalRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
         // Create protected region for plot
         ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getWorldName(), min, max);
@@ -243,11 +245,11 @@ public abstract class AbstractPlotGenerator {
 
 
         // Set permissions
-        protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH, StateFlag.State.ALLOW);
-        protectedPlotRegion.setFlag(DefaultFlag.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.OWNERS);
+        protectedPlotRegion.setFlag(Flags.PASSTHROUGH, StateFlag.State.ALLOW);
+        protectedPlotRegion.setFlag(Flags.PASSTHROUGH.getRegionGroupFlag(), RegionGroup.OWNERS);
 
-        protectedPlotRegion.setFlag(DefaultFlag.ENTRY, StateFlag.State.ALLOW);
-        protectedPlotRegion.setFlag(DefaultFlag.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+        protectedPlotRegion.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
+        protectedPlotRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getCommandsConfig();
 
@@ -263,11 +265,11 @@ public abstract class AbstractPlotGenerator {
         List<String> blockedCommandsBuilders = config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS);
         blockedCommandsBuilders.removeIf(c -> c.equals("/cmd1"));
 
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
-        protectedPlotRegion.setFlag(DefaultFlag.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
+        protectedPlotRegion.setFlag(Flags.BLOCKED_CMDS, new HashSet<>(blockedCommandsBuilders));
+        protectedPlotRegion.setFlag(Flags.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.OWNERS);
 
-        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
-        protectedPlotRegion.setFlag(DefaultFlag.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
+        protectedPlotRegion.setFlag(Flags.ALLOWED_CMDS, new HashSet<>(allowedCommandsNonBuilder));
+        protectedPlotRegion.setFlag(Flags.ALLOWED_CMDS.getRegionGroupFlag(), RegionGroup.NON_OWNERS);
     }
 
     /**

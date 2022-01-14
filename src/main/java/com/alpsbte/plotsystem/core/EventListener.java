@@ -26,25 +26,29 @@ package com.alpsbte.plotsystem.core;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
-import com.alpsbte.plotsystem.core.system.plot.PlotManager;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
 import com.alpsbte.plotsystem.core.menus.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.ReviewMenu;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.PlotManager;
 import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
-import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.bukkit.RegionQuery;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.alpsbte.plotsystem.utils.items.SpecialBlocks;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,7 +58,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.TrapDoor;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -174,10 +178,12 @@ public class EventListener extends SpecialBlocks implements Listener {
             if (event.getHand() != EquipmentSlot.OFF_HAND) {
                 if (!event.getPlayer().isSneaking()){
                     if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.IRON_TRAPDOOR) {
-                        RegionContainer regionContainer = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+                        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
                         RegionQuery query = regionContainer.createQuery();
 
-                        if (query.testBuild(event.getPlayer().getLocation(), PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), DefaultFlag.INTERACT)) {
+
+                        if (query.testBuild(BukkitAdapter.adapt(event.getPlayer().getLocation()),
+                                PlotSystem.DependencyManager.getWorldGuard().wrapPlayer(event.getPlayer()), Flags.INTERACT)) {
                             BlockState state = event.getClickedBlock().getState();
                             TrapDoor tp = (TrapDoor) state.getData();
 
@@ -258,29 +264,29 @@ public class EventListener extends SpecialBlocks implements Listener {
         if(event.canBuild()) {
             ItemStack item = event.getItemInHand();
 
-            if(item.isSimilar(SeamlessSandstone)) {
-                event.getBlockPlaced().setTypeIdAndData(43, (byte) 9, true);
-            } else if(item.isSimilar(SeamlessRedSandstone)) {
-                event.getBlockPlaced().setTypeIdAndData(181, (byte) 12, true);
-            } else if(item.isSimilar(SeamlessStone)) {
-                event.getBlockPlaced().setTypeIdAndData(43, (byte) 8, true);
-            } else if(item.isSimilar(SeamlessMushroomStem)) {
-                event.getBlockPlaced().setTypeIdAndData(99, (byte) 15, true);
-            } else if(item.isSimilar(LightBrownMushroom)) {
-                event.getBlockPlaced().setTypeIdAndData(99, (byte) 0, true);
-            } else if(item.isSimilar(BarkOakLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 12, true);
-            } else if(item.isSimilar(BarkSpruceLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 13, true);
-            } else if(item.isSimilar(BarkBirchLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 14, true);
-            } else if(item.isSimilar(BarkJungleLog)) {
-                event.getBlockPlaced().setTypeIdAndData(17, (byte) 15, true);
-            } else if(item.isSimilar(BarkAcaciaLog)) {
-                event.getBlockPlaced().setTypeIdAndData(162, (byte) 12, true);
-            } else if(item.isSimilar(BarkDarkOakLog)) {
-                event.getBlockPlaced().setTypeIdAndData(162, (byte) 13, true);
-            }
+//            if(item.isSimilar(SeamlessSandstone)) {
+//                event.getBlockPlaced().setTypeIdAndData(43, (byte) 9, true);
+//            } else if(item.isSimilar(SeamlessRedSandstone)) {
+//                event.getBlockPlaced().setTypeIdAndData(181, (byte) 12, true);
+//            } else if(item.isSimilar(SeamlessStone)) {
+//                event.getBlockPlaced().setTypeIdAndData(43, (byte) 8, true);
+//            } else if(item.isSimilar(SeamlessMushroomStem)) {
+//                event.getBlockPlaced().setTypeIdAndData(99, (byte) 15, true);
+//            } else if(item.isSimilar(LightBrownMushroom)) {
+//                event.getBlockPlaced().setTypeIdAndData(99, (byte) 0, true);
+//            } else if(item.isSimilar(BarkOakLog)) {
+//                event.getBlockPlaced().setTypeIdAndData(17, (byte) 12, true);
+//            } else if(item.isSimilar(BarkSpruceLog)) {
+//                event.getBlockPlaced().setTypeIdAndData(17, (byte) 13, true);
+//            } else if(item.isSimilar(BarkBirchLog)) {
+//                event.getBlockPlaced().setTypeIdAndData(17, (byte) 14, true);
+//            } else if(item.isSimilar(BarkJungleLog)) {
+//                event.getBlockPlaced().setTypeIdAndData(17, (byte) 15, true);
+//            } else if(item.isSimilar(BarkAcaciaLog)) {
+//                event.getBlockPlaced().setTypeIdAndData(162, (byte) 12, true);
+//            } else if(item.isSimilar(BarkDarkOakLog)) {
+//                event.getBlockPlaced().setTypeIdAndData(162, (byte) 13, true);
+//            }
         }
     }
 

@@ -24,17 +24,17 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Review;
 import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
-import com.sk89q.worldedit.Vector;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.ftp.FTPManager;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -44,7 +44,10 @@ import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -158,7 +161,7 @@ public class Plot extends PlotPermissions {
 
     public String getGeoCoordinatesNumeric() throws SQLException {
         // Convert MC coordinates to geo coordinates
-        Vector mcCoordinates = getMinecraftCoordinates();
+        BlockVector3 mcCoordinates = getMinecraftCoordinates();
         try {
             return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.getX(), mcCoordinates.getZ()));
         } catch (OutOfProjectionBoundsException ex) {
@@ -167,13 +170,13 @@ public class Plot extends PlotPermissions {
         return null;
     }
 
-    public Vector getMinecraftCoordinates() throws SQLException {
+    public BlockVector3 getMinecraftCoordinates() throws SQLException {
         try (ResultSet rs = DatabaseConnection.createStatement("SELECT mc_coordinates FROM plotsystem_plots WHERE id = ?")
                 .setValue(this.ID).executeQuery()) {
 
             if (rs.next()) {
                 String[] mcLocation = rs.getString(1).split(",");
-                return new Vector(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
+                return BlockVector3.at(Double.parseDouble(mcLocation[0]), Double.parseDouble(mcLocation[1]), Double.parseDouble(mcLocation[2]));
             }
             return null;
         }

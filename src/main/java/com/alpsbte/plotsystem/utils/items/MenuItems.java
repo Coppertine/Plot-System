@@ -73,13 +73,7 @@ public class MenuItems {
     }
 
     public static ItemStack loadingItem(Material material) {
-        return new ItemBuilder(material)
-                .setName("§6§lLoading...")
-                .build();
-    }
-
-    public static ItemStack loadingItem(Material material, byte subId) {
-        return new ItemBuilder(material, 1, subId)
+        return new ItemBuilder(material, 1)
                 .setName("§6§lLoading...")
                 .build();
     }

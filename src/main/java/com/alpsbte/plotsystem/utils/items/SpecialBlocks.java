@@ -30,7 +30,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class SpecialBlocks {
-    public static ItemStack SeamlessSandstone = new ItemBuilder(Material.SANDSTONE, 1, (byte) 2)
+    // Decepitated: In building menu. Now as smooth blocks.
+/*
+    public static ItemStack SeamlessSandstone = new ItemBuilder(Material.SMOOTH_SANDSTONE, 1)
             .setName("§6§lSeamless Sandstone").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fSeamless Sandstone§7 block.",
@@ -62,8 +64,8 @@ public class SpecialBlocks {
                 .build())
             .setEnchantment(true)
             .build();
-
-    public static ItemStack RedMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_2, 1)
+*/
+    public static ItemStack RedMushroom = new ItemBuilder(Material.RED_MUSHROOM_BLOCK, 1)
             .setName("§6§lRed Mushroom").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fRed Mushroom§7 block.",
@@ -74,7 +76,7 @@ public class SpecialBlocks {
             .setEnchantment(true)
             .build();
 
-    public static ItemStack BrownMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_1, 1)
+    public static ItemStack BrownMushroom = new ItemBuilder(Material.BROWN_MUSHROOM_BLOCK, 1)
             .setName("§6§lBrown Mushroom Block").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fBrown Mushroom§7 block.",
@@ -85,7 +87,7 @@ public class SpecialBlocks {
             .setEnchantment(true)
             .build();
 
-    public static ItemStack SeamlessMushroomStem = new ItemBuilder(Material.HUGE_MUSHROOM_2, 1)
+    public static ItemStack SeamlessMushroomStem = new ItemBuilder(Material.MUSHROOM_STEM, 1)
             .setName("§6§lSeamless Mushroom Stem Block").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fSeamless Mushroom Stem§7 block.",
@@ -96,7 +98,7 @@ public class SpecialBlocks {
             .setEnchantment(true)
             .build();
 
-    public static ItemStack LightBrownMushroom = new ItemBuilder(Material.HUGE_MUSHROOM_1, 1)
+    public static ItemStack LightBrownMushroom = new ItemBuilder(Material.BROWN_MUSHROOM_BLOCK, 1)
             .setName("§6§lLight Brown Mushroom Block").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §fLight Brown Mushroom§7 block.",
@@ -118,7 +120,9 @@ public class SpecialBlocks {
             .setEnchantment(true)
             .build();
 
-    public static ItemStack BarkOakLog = new ItemBuilder(Material.LOG, 1, (byte) 0)
+    // Depreciated: Wood
+    /*
+    public static ItemStack BarkOakLog = new ItemBuilder(Material.OAK_LOG, 1)
             .setName("§6§lBark Oak Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Oak Log§7 block.",
@@ -129,7 +133,7 @@ public class SpecialBlocks {
             .setEnchantment(true)
             .build();
 
-    public static ItemStack BarkBirchLog = new ItemBuilder(Material.LOG, 1, (byte) 2)
+    public static ItemStack BarkBirchLog = new ItemBuilder(Material.BIRCH_LOG, 1)
             .setName("§6§lBark Birch Log").setLore(new LoreBuilder()
                 .emptyLine()
                 .addLines("Use this tool to place a §f6-Sided Bark Birch Log§7 block.",
@@ -183,4 +187,6 @@ public class SpecialBlocks {
             .build())
             .setEnchantment(true)
             .build();
+
+     */
 }

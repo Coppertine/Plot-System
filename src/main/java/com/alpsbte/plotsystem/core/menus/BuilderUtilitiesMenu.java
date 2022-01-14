@@ -58,7 +58,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set custom-heads menu item
         getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3)
+                .setItem(new ItemBuilder(Material.PLAYER_HEAD, 1)
                         .setName("§b§lCUSTOM HEADS")
                         .setLore(new LoreBuilder()
                                 .addLine("Open the head menu to get a variety of custom heads.").build())
@@ -66,7 +66,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
 
         // Set banner-maker menu item
         getMenu().getSlot(13)
-                .setItem(new ItemBuilder(Material.BANNER, 1, (byte) 14)
+                .setItem(new ItemBuilder(Material.RED_BANNER, 1)
                         .setName("§b§lBANNER MAKER")
                         .setLore(new LoreBuilder()
                                 .addLine("Open the banner maker menu to create your own custom banners.").build())
@@ -94,7 +94,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")
@@ -105,7 +105,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem() {
-        return new ItemBuilder(Material.GOLD_AXE)
+        return new ItemBuilder(Material.GOLDEN_AXE)
                 .setName("§b§lBuilder Utilities")
                 .setLore(new LoreBuilder()
                         .addLine("Get access to custom heads, banners and special blocks.").build())

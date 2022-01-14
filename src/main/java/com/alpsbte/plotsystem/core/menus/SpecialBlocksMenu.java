@@ -75,7 +75,7 @@ public class SpecialBlocksMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("111101111")
@@ -89,50 +89,22 @@ public class SpecialBlocksMenu extends AbstractMenu {
     private ItemStack getSpecialBlock(int ID) {
         switch (ID) {
             // First Row
-            // Seamless Sandstone
-            case 0:
-                return SpecialBlocks.SeamlessSandstone;
-            // Seamless Red Sandstone
-            case 1:
-                return SpecialBlocks.SeamlessRedSandstone;
-            // Seamless Stone
-            case 2:
-                return SpecialBlocks.SeamlessStone;
             // Red Mushroom
-            case 3:
+            case 0:
                 return SpecialBlocks.RedMushroom;
             // Seamless Mushroom Stem
-            case 4:
+            case 1:
                 return SpecialBlocks.SeamlessMushroomStem;
             // Brown Mushroom
-            case 5:
+            case 2:
                 return SpecialBlocks.BrownMushroom;
             // Light Brown Mushroom
-            case 6:
+            case 3:
                 return SpecialBlocks.LightBrownMushroom;
             // Barrier
-            case 7:
+            case 4:
                 return SpecialBlocks.Barrier;
 
-            // Second Row
-            // Bark Oak Log
-            case 9:
-                return SpecialBlocks.BarkOakLog;
-            // Bark Spruce Log
-            case 10:
-               return SpecialBlocks.BarkSpruceLog;
-            // Bark Birch Log
-            case 11:
-                return SpecialBlocks.BarkBirchLog;
-            // Bark Jungle Log
-            case 12:
-                return SpecialBlocks.BarkJungleLog;
-            // Bark Acacia Log
-            case 13:
-                return SpecialBlocks.BarkAcaciaLog;
-            // Bark Dark Oak Log
-            case 14:
-                return SpecialBlocks.BarkDarkOakLog;
             default:
                 return null;
         }

@@ -35,6 +35,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -42,14 +43,15 @@ public class Utils {
 
     // Get custom head
     public static ItemStack getItemHead(CustomHead head) {
-        return head != null ? head.getAsItemStack() : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+        return head != null ? head.getAsItemStack() : new ItemBuilder(Material.PLAYER_HEAD, 1).build();
     }
 
     // Get player head by UUID
     public static ItemStack getPlayerHead(UUID playerUUID) {
-        ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD, 1);
 
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        assert meta != null;
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(playerUUID));
         skull.setItemMeta(meta);
 
@@ -57,18 +59,18 @@ public class Utils {
     }
 
     // Sounds
-    public static Sound TeleportSound = Sound.ENTITY_ENDERMEN_TELEPORT;
+    public static Sound TeleportSound = Sound.ENTITY_ENDERMAN_TELEPORT;
     public static Sound ErrorSound = Sound.ENTITY_ITEM_BREAK;
     public static Sound CreatePlotSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
     public static Sound FinishPlotSound = Sound.ENTITY_PLAYER_LEVELUP;
-    public static Sound AbandonPlotSound = Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE;
+    public static Sound AbandonPlotSound = Sound.ENTITY_ENDER_DRAGON_SHOOT; // TODO: Test sound when abandoning plot and see if it's needing change.
     public static Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
 
     // Spawn Location
     public static Location getSpawnLocation() {
         FileConfiguration config = PlotSystem.getPlugin().getConfigManager().getConfig();
 
-        if (!config.getString(ConfigPaths.SPAWN_WORLD).equalsIgnoreCase("default")) {
+        if (!Objects.requireNonNull(config.getString(ConfigPaths.SPAWN_WORLD)).equalsIgnoreCase("default")) {
             try {
                 MultiverseWorld spawnWorld = PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().getMVWorld(config.getString(ConfigPaths.SPAWN_WORLD));
                 return spawnWorld.getSpawnLocation();
@@ -151,7 +153,7 @@ public class Utils {
 
         public CustomHead(String headID) {
             this.headItem = headDatabaseAPI != null && headID != null && Utils.TryParseInt(headID) != null
-                    ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).build();
+                    ? headDatabaseAPI.getItemHead(headID) : new ItemBuilder(Material.PLAYER_HEAD, 1).build();
         }
 
         public ItemStack getAsItemStack() {

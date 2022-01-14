@@ -24,26 +24,25 @@
 
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.config.ConfigPaths;
+import com.alpsbte.plotsystem.core.database.DatabaseConnection;
+import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
-import com.alpsbte.plotsystem.core.system.Country;
+import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
+import com.alpsbte.plotsystem.utils.enums.Status;
+import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.database.DatabaseConnection;
-import com.alpsbte.plotsystem.core.system.Builder;
-import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
-import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.ftp.FTPManager;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -59,7 +58,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -145,12 +143,12 @@ public class PlotManager {
     public static CompletableFuture<Void> savePlotAsSchematic(Plot plot) throws IOException, SQLException, WorldEditException {
         // TODO: MOVE CONVERSION TO SEPERATE METHODS
 
-        Vector terraOrigin, schematicOrigin, plotOrigin;
-        Vector schematicMinPoint, schematicMaxPoint;
-        Vector plotCenter;
+        BlockVector3 terraOrigin, schematicOrigin, plotOrigin;
+        BlockVector3 schematicMinPoint, schematicMaxPoint;
+        BlockVector3 plotCenter;
 
         // Load plot outlines schematic as clipboard
-        Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
+        Clipboard outlinesClipboard = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read();
 
         // Get player origin coordinates on terra
         terraOrigin = plot.getMinecraftCoordinates();
@@ -164,13 +162,13 @@ public class PlotManager {
         int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
-        schematicMinPoint = Vector.toBlockPoint(
+        schematicMinPoint = BlockVector3.at(
                 plotCenter.getX() - outlinesClipboardCenterX,
                 PlotManager.getPlotCenter().getY(),
                 plotCenter.getZ() - outlinesClipboardCenterZ
         );
 
-        schematicMaxPoint = Vector.toBlockPoint(
+        schematicMaxPoint = BlockVector3.at(
                 plotCenter.getX() + outlinesClipboardCenterX,
                 256,
                 plotCenter.getZ() + outlinesClipboardCenterZ
@@ -178,7 +176,7 @@ public class PlotManager {
 
 
         // Convert terra schematic coordinates into relative plot schematic coordinates
-        schematicOrigin = Vector.toBlockPoint(
+        schematicOrigin = BlockVector3.at(
                 Math.floor(terraOrigin.getX()) - Math.floor(outlinesClipboard.getMinimumPoint().getX()),
                 Math.floor(terraOrigin.getY()) - Math.floor(outlinesClipboard.getMinimumPoint().getY()),
                 Math.floor(terraOrigin.getZ()) - Math.floor(outlinesClipboard.getMinimumPoint().getZ())
@@ -186,7 +184,7 @@ public class PlotManager {
 
 
         // Add additional plot sizes to relative plot schematic coordinates
-        plotOrigin = Vector.toBlockPoint(
+        plotOrigin = BlockVector3.at(
                 schematicOrigin.getX() + schematicMinPoint.getX(),
                 schematicOrigin.getY() + schematicMinPoint.getY(),
                 schematicOrigin.getZ() + schematicMinPoint.getZ()
@@ -216,8 +214,8 @@ public class PlotManager {
             }
         }
 
-        try(ClipboardWriter writer = ClipboardFormat.SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
-            writer.write(cb, Objects.requireNonNull(region.getWorld()).getWorldData());
+        try(ClipboardWriter writer = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+            writer.write(cb);
         }
 
         // Upload to FTP server
@@ -238,19 +236,19 @@ public class PlotManager {
     public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
 
         // Load plot outlines schematic as clipboard
-        Clipboard outlinesClipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read(null);
+        Clipboard outlinesClipboard = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read();
 
         // Calculate min and max points of schematic
         int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
         int outlinesClipboardCenterZ = (int) Math.floor(outlinesClipboard.getRegion().getLength() / 2d);
 
-        Vector schematicMinPoint = Vector.toBlockPoint(
+        BlockVector3 schematicMinPoint = BlockVector3.at(
                 PlotManager.getPlotCenter().getX() - outlinesClipboardCenterX + ((outlinesClipboard.getRegion().getWidth() % 2 == 0 ? 1 : 0)),
                 0,
                 PlotManager.getPlotCenter().getZ() - outlinesClipboardCenterZ + ((outlinesClipboard.getRegion().getLength() % 2 == 0 ? 1 : 0))
         );
 
-        Vector schematicMaxPoint = Vector.toBlockPoint(
+        BlockVector3 schematicMaxPoint = BlockVector3.at(
                 PlotManager.getPlotCenter().getX() + outlinesClipboardCenterX,
                 256,
                 PlotManager.getPlotCenter().getZ() + outlinesClipboardCenterZ
@@ -269,7 +267,7 @@ public class PlotManager {
         };
 
         // Return coordinates if they are in the schematic plot region
-        if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(new Vector((int)plotCoords[0], 15, (int)plotCoords[1]))) {
+        if(new CuboidRegion(schematicMinPoint, schematicMaxPoint).contains(BlockVector3.at((int)plotCoords[0], 15, (int)plotCoords[1]))) {
             return CompletableFuture.completedFuture(plotCoords);
         }
 
@@ -379,8 +377,8 @@ public class PlotManager {
         return PlotSystem.DependencyManager.getMultiverseCore().getMVWorldManager().isMVWorld(world) && world.getName().startsWith("P-");
     }
 
-    public static Vector getPlotCenter() {
-        return Vector.toBlockPoint(
+    public static BlockVector3 getPlotCenter() {
+        return BlockVector3.at(
                 PLOT_SIZE / 2d,
                 5,
                 PLOT_SIZE  / 2d

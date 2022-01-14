@@ -99,7 +99,7 @@ public class ReviewMenu extends AbstractMenu {
                 lines.add("§7City: §f" + plot.getCity().getName());
                 lines.add("§7Difficulty: §f" + plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase());
 
-                getMenu().getSlot(i).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.EMPTY_MAP : Material.MAP, 1)
+                getMenu().getSlot(i).setItem(new ItemBuilder(plot.getStatus() == Status.unfinished ? Material.MAP : Material.FILLED_MAP, 1)
                         .setName(plot.getStatus() == Status.unfinished ? "§b§lManage Plot" : "§b§lReview Plot")
                         .setLore(lines)
                         .build());
@@ -152,7 +152,7 @@ public class ReviewMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("000000000")
                 .pattern("000000000")
                 .pattern("000000000")

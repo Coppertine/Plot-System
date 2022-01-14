@@ -110,7 +110,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 28:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.EYE_OF_ENDER, 1)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.ENDER_EYE, 1)
                             .setName("§a§lDETAILING")
                             .setLore(new LoreBuilder()
                                     .addLines("How much detail does the building have?",
@@ -122,7 +122,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 37:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.WOOD_AXE, 1)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.WOODEN_AXE, 1)
                             .setName("§a§lTECHNIQUE")
                             .setLore(new LoreBuilder()
                                     .addLines("What building techniques have been used and how creative are they?",
@@ -133,14 +133,14 @@ public class ReviewPlotMenu extends AbstractMenu {
                             .build());
                     break;
                 case 48:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 13)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.GREEN_CONCRETE, 1)
                             .setName("§a§lSUBMIT")
                             .setLore(new LoreBuilder()
                                     .addLine("Submit selected points and mark plot as reviewed").build())
                             .build());
                     break;
                 case 50:
-                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.CONCRETE, 1, (byte) 14)
+                    getMenu().getSlot(i).setItem(new ItemBuilder(Material.RED_CONCRETE, 1)
                             .setName("§c§lCANCEL")
                             .setLore(new LoreBuilder()
                                     .addLine("Close the menu").build())
@@ -152,7 +152,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                     int position = ((i + 1) - (i + 1) % 9) / 54;
                     if (column > 2 && column < 9 && row > 1 && row < 6) {
                         if ((i + 1) % 9 == 3) {
-                            itemPointZero[position] = new ItemBuilder(Material.WOOL, 1, (byte) 8)
+                            itemPointZero[position] = new ItemBuilder(Material.LIGHT_GRAY_WOOL, 1)
                                     .setName("§l§70 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
@@ -164,7 +164,7 @@ public class ReviewPlotMenu extends AbstractMenu {
                             itemPointZero[position].setItemMeta(itemMeta);
                             getMenu().getSlot(i).setItem(itemPointZero[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 4) {
-                            itemPointOne[position] = new ItemBuilder(Material.WOOL, 1, (byte) 14)
+                            itemPointOne[position] = new ItemBuilder(Material.RED_WOOL, 1)
                                     .setName("§l§c1 Point")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
@@ -172,28 +172,28 @@ public class ReviewPlotMenu extends AbstractMenu {
 
                             getMenu().getSlot(i).setItem(itemPointOne[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 5) {
-                            itemPointTwo[position] = new ItemBuilder(Material.WOOL, 2, (byte) 1)
+                            itemPointTwo[position] = new ItemBuilder(Material.ORANGE_WOOL, 2)
                                     .setName("§l§62 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointTwo[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 6) {
-                            itemPointThree[position] = new ItemBuilder(Material.WOOL, 3, (byte) 4)
+                            itemPointThree[position] = new ItemBuilder(Material.YELLOW_WOOL, 3)
                                     .setName("§l§e3 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointThree[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 7) {
-                            itemPointFour[position] = new ItemBuilder(Material.WOOL, 4, (byte) 13)
+                            itemPointFour[position] = new ItemBuilder(Material.GREEN_WOOL, 4)
                                     .setName("§l§24 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
                                     .build();
                             getMenu().getSlot(i).setItem(itemPointFour[(i - (i + 1) % 9) / 54]);
                         } else if ((i + 1) % 9 == 8) {
-                            itemPointFive[position] = new ItemBuilder(Material.WOOL, 5, (byte) 5)
+                            itemPointFive[position] = new ItemBuilder(Material.LIME_WOOL, 5)
                                     .setName("§l§a5 Points")
                                     .setLore(new LoreBuilder()
                                             .addLine("Click to select").build())
@@ -424,7 +424,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111101111")
                 .pattern("100000001")
                 .pattern("100000001")

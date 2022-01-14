@@ -54,7 +54,7 @@ public class FeedbackMenu extends AbstractMenu {
 
     @Override
     protected void setPreviewItems() {
-        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.SKULL_ITEM, (byte) 3));
+        getMenu().getSlot(16).setItem(MenuItems.loadingItem(Material.PLAYER_HEAD));
 
         super.setPreviewItems();
     }
@@ -94,7 +94,7 @@ public class FeedbackMenu extends AbstractMenu {
 
         // Set feedback text item
         try {
-            getMenu().getSlot(13).setItem(new ItemBuilder(Material.BOOK_AND_QUILL)
+            getMenu().getSlot(13).setItem(new ItemBuilder(Material.WRITABLE_BOOK)
                     .setName("§b§lFeedback")
                     .setLore(new LoreBuilder()
                             .addLine(plot.getReview().getFeedback()).build())
@@ -123,7 +123,7 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(new ItemBuilder(Material.STAINED_GLASS_PANE, 1, (byte) 7).setName(" ").build())
+                .item(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE, 1).setName(" ").build())
                 .pattern("111111111")
                 .pattern("000000000")
                 .pattern("111111111")
