@@ -150,7 +150,7 @@ public abstract class AbstractPlotGenerator {
             if (plotSchematic != null) {
                 BlockVector3 buildingOutlinesCoordinates = PlotManager.getPlotCenter();
 
-                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getPlotWorld());
+                com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getWorld().getBukkitWorld());
                 Clipboard clipboard = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read();
 
                 // Place the bottom part of the schematic 5 blocks above 0
@@ -178,12 +178,12 @@ public abstract class AbstractPlotGenerator {
      */
     protected void configureWorld(@NotNull MultiverseWorld mvWorld) {
         // Set Bukkit world game rules
-        plot.getWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-        plot.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        plot.getWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
-        plot.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        plot.getWorld().setGameRule(GameRule.KEEP_INVENTORY, true);
-        plot.getWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        plot.getWorld().getBukkitWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        plot.getWorld().getBukkitWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        plot.getWorld().getBukkitWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
+        plot.getWorld().getBukkitWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        plot.getWorld().getBukkitWorld().setGameRule(GameRule.KEEP_INVENTORY, true);
+        plot.getWorld().getBukkitWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
         // Set world time to midday
         plot.getWorld().getBukkitWorld().setTime(6000);
@@ -208,7 +208,7 @@ public abstract class AbstractPlotGenerator {
         BlockVector3 max = BlockVector3.at(PlotManager.PLOT_SIZE, 256, PlotManager.PLOT_SIZE);
 
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionManager regionManager = container.get(BukkitAdapter.adapt(plot.getPlotWorld()));
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(plot.getWorld().getBukkitWorld()));
 
         // Create protected region for world
         GlobalProtectedRegion globalRegion = new GlobalProtectedRegion("__global__");

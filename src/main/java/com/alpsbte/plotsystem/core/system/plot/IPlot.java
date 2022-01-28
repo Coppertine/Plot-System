@@ -31,7 +31,7 @@ import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -188,7 +188,7 @@ public interface IPlot {
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
      * @throws SQLException SQL database exception
      */
-    Vector getMinecraftCoordinates() throws SQLException;
+    BlockVector3 getMinecraftCoordinates() throws SQLException;
 
     /**
      * @param pasted if true, plot has been pasted on the Terra121 server
