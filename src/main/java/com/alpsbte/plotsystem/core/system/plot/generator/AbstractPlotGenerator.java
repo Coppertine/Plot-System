@@ -127,7 +127,6 @@ public abstract class AbstractPlotGenerator {
         worldCreator = new WorldCreator(plot.getWorldName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
-        worldCreator.generatorSettings("2;0;1;");
         worldCreator.createWorld();
     }
 
@@ -137,8 +136,8 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(), false,
-                    "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}");
+            worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(),
+                    false, "VoidGen");
         } else {
             throw new RuntimeException("World Creator is not configured");
         }
@@ -154,7 +153,7 @@ public abstract class AbstractPlotGenerator {
                 BlockVector3 buildingOutlinesCoordinates = PlotManager.getPlotCenter();
 
                 com.sk89q.worldedit.world.World weWorld = new BukkitWorld(plot.getPlotWorld());
-                Clipboard clipboard = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read();
+                Clipboard clipboard = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getReader(new FileInputStream(plotSchematic)).read();
 
                 // Place the bottom part of the schematic 5 blocks above 0
                 int heightDif = clipboard.getOrigin().getY() - clipboard.getMinimumPoint().getY();
