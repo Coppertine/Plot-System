@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2021, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2021-2022, Alps BTE <bte.atchli@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -86,29 +86,27 @@ public abstract class AbstractPlotGenerator {
         this.builder = builder;
 
         if (init()) {
-            Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-                Exception exception = null;
-                try {
-                    generateWorld();
-                    generateOutlines(plot.getOutlinesSchematic());
-                    createMultiverseWorld();
-                    configureWorld(worldManager.getMVWorld(plot.getPlotWorld()));
-                    createProtection();
-                } catch (Exception ex) {
-                    exception = ex;
-                }
+            Exception exception = null;
+            try {
+                generateWorld();
+                generateOutlines(plot.getOutlinesSchematic());
+                createMultiverseWorld();
+                configureWorld(worldManager.getMVWorld(plot.getWorld().getBukkitWorld()));
+                createProtection();
+            } catch (Exception ex) {
+                exception = ex;
+            }
 
-                try {
-                    this.onComplete(exception != null);
-                } catch (SQLException ex) {
-                    exception = ex;
-                }
+            try {
+                this.onComplete(exception != null);
+            } catch (SQLException ex) {
+                exception = ex;
+            }
 
-                if (exception != null) {
-                    if (worldManager.isMVWorld(plot.getWorldName())) PlotHandler.abandonPlot(plot);
-                    onException(exception);
-                }
-            });
+            if (exception != null) {
+                if (worldManager.isMVWorld(plot.getWorld().getWorldName())) PlotHandler.abandonPlot(plot);
+                onException(exception);
+            }
         }
     }
 
@@ -122,9 +120,9 @@ public abstract class AbstractPlotGenerator {
      * Generates plot world
      */
     protected void generateWorld() {
-        if (PlotManager.plotExists(plot.getID())) PlotHandler.abandonPlot(plot);
+        if (getPlot().getWorld().isWorldGenerated()) plot.getWorld().deleteWorld();
 
-        worldCreator = new WorldCreator(plot.getWorldName());
+        worldCreator = new WorldCreator(plot.getWorld().getWorldName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
         worldCreator.createWorld();
@@ -136,7 +134,7 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            worldManager.addWorld(plot.getWorldName(), worldCreator.environment(), null, worldCreator.type(),
+            worldManager.addWorld(plot.getWorld().getWorldName(), worldCreator.environment(), null, worldCreator.type(),
                     false, "VoidGen");
         } else {
             throw new RuntimeException("World Creator is not configured");
@@ -166,7 +164,7 @@ public abstract class AbstractPlotGenerator {
                 Operations.complete(operation);
                 editSession.close();
 
-                plot.getPlotWorld().setSpawnLocation(PlotHandler.getPlotSpawnPoint(plot));
+                plot.getWorld().getBukkitWorld().setSpawnLocation(plot.getWorld().getSpawnPoint());
             }
         } catch (IOException | WorldEditException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while generating plot outlines!", ex);
@@ -180,16 +178,15 @@ public abstract class AbstractPlotGenerator {
      */
     protected void configureWorld(@NotNull MultiverseWorld mvWorld) {
         // Set Bukkit world game rules
-        plot.getPlotWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-        plot.getPlotWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        plot.getPlotWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
-        plot.getPlotWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        plot.getPlotWorld().setGameRule(GameRule.KEEP_INVENTORY, true);
-        plot.getPlotWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        plot.getPlotWorld().setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+        plot.getWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        plot.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        plot.getWorld().setGameRule(GameRule.DO_FIRE_TICK, false);
+        plot.getWorld().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        plot.getWorld().setGameRule(GameRule.KEEP_INVENTORY, true);
+        plot.getWorld().setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
         // Set world time to midday
-        plot.getPlotWorld().setTime(6000);
+        plot.getWorld().getBukkitWorld().setTime(6000);
 
         // Configure multiverse world
         mvWorld.setAllowFlight(true);
@@ -219,7 +216,7 @@ public abstract class AbstractPlotGenerator {
         globalRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
 
         // Create protected region for plot
-        ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getWorldName(), min, max);
+        ProtectedRegion protectedPlotRegion = new ProtectedCuboidRegion(plot.getWorld().getWorldName(), min, max);
         protectedPlotRegion.setPriority(100);
 
         // Add and save regions

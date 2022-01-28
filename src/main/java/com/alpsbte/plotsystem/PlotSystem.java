@@ -56,7 +56,7 @@ import java.util.logging.Level;
 
 public class PlotSystem extends JavaPlugin {
 
-    private static final String VERSION = "2.2-1.17";
+    private static final String VERSION = "2.3-1.17";
 
     private static PlotSystem plugin;
     private ConfigManager configManager;
@@ -280,6 +280,10 @@ public class PlotSystem extends JavaPlugin {
          */
         public static boolean isHolographicDisplaysEnabled() {
             return plugin.getServer().getPluginManager().isPluginEnabled("HolographicDisplays");
+        }
+
+        public static boolean isMultiverseInventoriesEnabled() {
+            return plugin.getServer().getPluginManager().isPluginEnabled("Multiverse-Inventories");
         }
 
         /**
