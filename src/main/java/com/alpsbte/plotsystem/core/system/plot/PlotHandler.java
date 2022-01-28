@@ -151,12 +151,12 @@ public class PlotHandler {
 
         if (CompletableFuture.supplyAsync(() -> {
             try {
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
-                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schematic"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), "finishedSchematics", String.valueOf(plot.getCity().getID()), plot.getID() + ".schem"));
+                Files.deleteIfExists(Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(plot.getCity().getCountry().getServer().getID()), String.valueOf(plot.getCity().getID()), plot.getID() + ".schem"));
 
                 Server plotServer = plot.getCity().getCountry().getServer();
                 if (plotServer.getFTPConfiguration() != null) {
-                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schematic", false);
+                    return FTPManager.deleteSchematics(FTPManager.getFTPUrl(plotServer, plot.getCity().getID()), plot.getID() + ".schem", false);
                 }
             } catch (IOException | SQLException | URISyntaxException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, "A SQL error occurred!", ex);

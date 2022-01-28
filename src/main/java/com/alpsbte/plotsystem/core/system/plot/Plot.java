@@ -88,7 +88,7 @@ public class Plot extends PlotPermissions {
         try {
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), getID() + ".schematic").toFile();
+                    File file = Paths.get(PlotManager.getDefaultSchematicPath(), String.valueOf(getCity().getCountry().getServer().getID()), String.valueOf(getCity().getID()), getID() + ".schem").toFile();
 
                     if(!file.exists()) {
                         if (getCity().getCountry().getServer().getFTPConfiguration() != null) {
