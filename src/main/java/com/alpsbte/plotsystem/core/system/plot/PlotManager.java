@@ -148,7 +148,7 @@ public class PlotManager {
         BlockVector3 plotCenter;
 
         // Load plot outlines schematic as clipboard
-        Clipboard outlinesClipboard = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read();
+        Clipboard outlinesClipboard = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read();
 
         // Get player origin coordinates on terra
         terraOrigin = plot.getMinecraftCoordinates();
@@ -214,7 +214,7 @@ public class PlotManager {
             }
         }
 
-        try(ClipboardWriter writer = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
+        try(ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getWriter(new FileOutputStream(finishedSchematicFile, false))) {
             writer.write(cb);
         }
 
@@ -236,7 +236,7 @@ public class PlotManager {
     public static CompletableFuture<double[]> convertTerraToPlotXZ(Plot plot, double[] terraCoords) throws IOException {
 
         // Load plot outlines schematic as clipboard
-        Clipboard outlinesClipboard = BuiltInClipboardFormat.MCEDIT_SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read();
+        Clipboard outlinesClipboard = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getReader(new FileInputStream(plot.getOutlinesSchematic())).read();
 
         // Calculate min and max points of schematic
         int outlinesClipboardCenterX = (int) Math.floor(outlinesClipboard.getRegion().getWidth() / 2d);
