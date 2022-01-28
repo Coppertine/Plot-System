@@ -65,7 +65,7 @@ public class Utils {
     public static Sound FinishPlotSound = Sound.ENTITY_PLAYER_LEVELUP;
     public static Sound AbandonPlotSound = Sound.ENTITY_ENDER_DRAGON_SHOOT; // TODO: Test sound when abandoning plot and see if it's needing change.
     public static Sound Done = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    public static Sound INVENTORY_CLICK = Sound.ENTITY_ITEMFRAME_ADD_ITEM;
+    public static Sound INVENTORY_CLICK = Sound.ENTITY_ITEM_FRAME_ADD_ITEM;
 
     // Spawn Location
     public static Location getSpawnLocation() {

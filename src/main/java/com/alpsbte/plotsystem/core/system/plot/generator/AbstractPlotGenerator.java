@@ -125,6 +125,8 @@ public abstract class AbstractPlotGenerator {
         worldCreator = new WorldCreator(plot.getWorld().getWorldName());
         worldCreator.environment(org.bukkit.World.Environment.NORMAL);
         worldCreator.type(WorldType.FLAT);
+        worldCreator.generator("VoidGen");
+        //worldCreator.generatorSettings("{\"structures\":{\"structures\":{}},\"layers\":[{\"block\": \"air\", \"height\":1}], \"biome\":\"plains\"}");
         worldCreator.createWorld();
     }
 
@@ -134,8 +136,7 @@ public abstract class AbstractPlotGenerator {
     protected void createMultiverseWorld() {
         // Check if world creator is configured and add new world to multiverse world manager
         if (worldCreator != null) {
-            worldManager.addWorld(plot.getWorld().getWorldName(), worldCreator.environment(), null, worldCreator.type(),
-                    false, "VoidGen");
+            worldManager.addWorld(plot.getWorld().getWorldName(), worldCreator.environment(), null, worldCreator.type(),false, "VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false,\"noise\":false,\"surface\":false,\"bedrock\":false}");
         } else {
             throw new RuntimeException("World Creator is not configured");
         }

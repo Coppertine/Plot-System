@@ -29,15 +29,18 @@ import com.alpsbte.plotsystem.commands.admin.CMD_CleanPlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_DeletePlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_PReload;
 import com.alpsbte.plotsystem.commands.admin.CMD_SetHologram;
+import com.alpsbte.plotsystem.commands.admin.dev.CMD_PlotComplete;
 import com.alpsbte.plotsystem.commands.admin.setup.CMD_Setup;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot;
 import com.alpsbte.plotsystem.commands.review.CMD_EditPlot;
 import com.alpsbte.plotsystem.commands.review.CMD_Review;
 import com.alpsbte.plotsystem.commands.review.CMD_SendFeedback;
 import com.alpsbte.plotsystem.commands.review.CMD_UndoReview;
+import com.alpsbte.plotsystem.core.config.ConfigPaths;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CommandManager {
 
@@ -68,6 +71,9 @@ public class CommandManager {
     }};
 
     public void init() {
+        if(PlotSystem.getPlugin().getConfigManager().getConfig().getBoolean(ConfigPaths.DEV_MODE))
+            baseCommands.add(new CMD_PlotComplete());
+
         for (BaseCommand baseCmd : baseCommands) {
             for (String baseName : baseCmd.getNames()) {
                 PlotSystem.getPlugin().getCommand(baseName).setExecutor(baseCmd);

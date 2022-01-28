@@ -37,9 +37,11 @@ import com.alpsbte.plotsystem.core.system.plot.generator.RawPlotGenerator;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -221,9 +223,9 @@ public class PlotWorld implements IPlotWorld {
 
     @Override
     public ProtectedRegion getProtectedRegion() {
-        RegionContainer container = PlotSystem.DependencyManager.getWorldGuard().getRegionContainer();
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         if (loadWorld()) {
-            RegionManager regionManager = container.get(getBukkitWorld());
+            RegionManager regionManager = container.get(BukkitAdapter.adapt(getBukkitWorld()));
             if (regionManager != null) {
                 return regionManager.getRegion(getWorldName().toLowerCase(Locale.ROOT));
             } else Bukkit.getLogger().log(Level.WARNING, "Region manager is null");

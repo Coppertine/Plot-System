@@ -106,6 +106,12 @@ public class PlotSystem extends JavaPlugin {
 
         this.configManager.reloadConfigs();
 
+        if(configManager.getConfig().getBoolean("dev-mode"))
+        {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "Developer Mode Enabled!");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Please ensure you know what you are doing before going further.");
+        }
+
         // Initialize database connection
         try {
             DatabaseConnection.InitializeDatabase();
